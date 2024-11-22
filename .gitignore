@@ -18,7 +18,6 @@ build/
 tmp/
 temp/
 frontend/.next/
-frontend/out/
 backend/dist/
 **/dist/
 **/build/
