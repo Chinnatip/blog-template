@@ -5,7 +5,7 @@ const router = express.Router();
 const prisma = new PrismaClient();
 
 // Fetch all posts
-router.get('/posts', async (req: Request, res: any) => {
+router.get('/', async (req: Request, res: any) => {
     try {
       const posts = await prisma.post.findMany({
         include: { author: true }, // Fetch the author details for each post
@@ -16,10 +16,10 @@ router.get('/posts', async (req: Request, res: any) => {
       console.error('Error fetching posts:', error);
       return res.status(500).json({ error: 'Internal server error' });
     }
-  });
+});
 
 // Create a new post
-router.post('/posts', async (req: Request, res: any) => {
+router.post('/', async (req: Request, res: any) => {
   try {
 
     const { title, content, authorId } = req.body;
