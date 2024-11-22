@@ -1,0 +1,65 @@
+services:
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - "4000:4000" # Backend API
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@db:5432/doppio-blogger?schema=public
+      - NODE_ENV=development
+    volumes:
+      - ./backend:/app # Mount backend code for hot reloading
+      - /app/node_modules # Prevent overwriting node_modules
+    depends_on:
+      - db
+    networks:
+      - app-network
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "3000:3000" # Frontend
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@db:5432/doppio-blogger?schema=public
+      - PORT=3000
+    depends_on:
+      - backend # Wait for backend to be ready
+    networks:
+      - app-network
+    volumes:
+      - ./frontend:/app # Mount frontend code for live reload
+
+  db:
+    image: postgres:13
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: doppio-blogger
+    ports:
+      - "5432:5432" # PostgreSQL
+    networks:
+      - app-network
+    volumes:
+      - db_data:/var/lib/postgresql/data
+  
+  prisma-studio:
+    image: node:18
+    working_dir: /app
+    volumes:
+      - ./backend:/app # Mount backend directory to /app
+    command: sh -c "yarn install && npx prisma studio --port 5555"
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@db:5432/doppio-blogger?schema=public
+    ports:
+      - "5555:5555"
+    depends_on:
+      - db
+    networks:
+      - app-network
+
+networks:
+  app-network:
+
+volumes:
+  db_data:
