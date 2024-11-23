@@ -1,7 +1,7 @@
 // components/BlogList.test.tsx
 import { render, screen } from '@testing-library/react';
 import { useStore } from '@/lib/store'
-import BlogList from './BlogList';
+import BlogList from '@/components/BlogList';
 
 
 describe('BlogList Component', () => {

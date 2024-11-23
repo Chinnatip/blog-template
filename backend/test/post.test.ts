@@ -7,7 +7,7 @@ import { PrismaClient } from '@prisma/client';
 // Initialize Express app with the routes
 const app = express();
 app.use(express.json());
-app.use('/api', postRoutes);
+app.use('/api/posts', postRoutes);
 
 // Mock database with Prisma client
 jest.mock('@prisma/client', () => {
@@ -24,17 +24,6 @@ jest.mock('@prisma/client', () => {
 });
 
 const prisma = new PrismaClient();
-
-// Before and After Hooks
-beforeAll(() => {
-  // Reset and seed database before tests
-  execSync('npx prisma migrate reset --force --skip-seed', { stdio: 'inherit' });
-  execSync('npx ts-node prisma/testSeed.ts', { stdio: 'inherit' });
-});
-
-afterAll(async () => {
-  await prisma.$disconnect();
-});
 
 // Test cases
 describe('GET /api/posts', () => {
