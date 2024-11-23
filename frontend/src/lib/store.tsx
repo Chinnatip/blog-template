@@ -16,29 +16,54 @@ interface PostState {
     fetchPosts: () => void;
 }
 
+interface User {
+    id: number;
+    name: string;
+    email: string
+}
+
 interface AuthState {
-    user: { id: number; name: string; email: string } | null;
+    user: User | null;
     token: string | null;
-    login: (email: string, password: string) => Promise<void>;
+    login: (email: string, password: string) => Promise<string | undefined>;
     register: (name: string, email: string, password: string) => Promise<void>;
     logout: () => void;
+    getUser: (token: string) => Promise<User | undefined>;
+    setUser: ( user: any) => void;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
     user: null,
     token: null,
+    setUser: (user: User) => {
+        set(produce((state: AuthState) => {
+            state.user = user
+        }))
+    },
+    getUser: async (token: string) => {
+        const meResponse = await api.get('/auth/me',{ headers: { Authorization: `Bearer ${token}` }},)
+        const { user } = meResponse.data
+        return user
+    },
     login: async (email, password) => {
-        const response = await api.post('/auth/login', { email, password });
-        const { user, token } = response.data
+        const loginResponse = await api.post('/auth/login', { email, password });
+        const { token } = loginResponse.data
+        const meResponse = await api.get('/auth/me',{ headers: { Authorization: `Bearer ${token}` }},)
+        const { user } = meResponse.data
         set(produce((state: AuthState) => { 
             state.user = user,
             state.token = token
         }))
+        if(typeof token == 'string'){
+            localStorage.setItem('doppio_u_token', token)
+        }
+        return token
     },
     register: async (name, email, password) => {
       await api.post('/auth/register', { name, email, password });
     },
     logout: () => {
+        localStorage.removeItem('doppio_u_token')
         set(produce((state: AuthState) => {
             state.user = null
             state.token = null

@@ -1,6 +1,5 @@
 import request from 'supertest';
 import express from 'express';
-import { execSync } from 'child_process';
 import postRoutes from '../src/routes/postRoutes';
 import { PrismaClient } from '@prisma/client';
 

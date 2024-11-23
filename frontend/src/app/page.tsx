@@ -4,6 +4,9 @@ import { useEffect } from 'react'
 import { useStore } from '@/lib/store'
 import Image from "next/image";
 import BlogList from "@/components/BlogList";
+import Login from '@/components/Login';
+import Register from '@/components/Register';
+import UserPanel from '@/components/UserPanel';
 
 export default function Home() {
   const fetchPosts = useStore((state) => state.fetchPosts);
@@ -23,8 +26,10 @@ export default function Home() {
           height={38}
           priority
         />
-        <h1>Hello zinatip !</h1>
         <BlogList />
+        <Login />
+        <Register />
+        <UserPanel />
       </main>
       <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
         lear share fun
