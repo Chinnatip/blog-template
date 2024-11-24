@@ -9,6 +9,18 @@ async function seed() {
   // Hash password for the test user
   const hashedPassword = await bcrypt.hash('password123', 10);
 
+  // Create or update superadmin
+  await prisma.user.upsert({
+    where: { email: 'superadmin@example.com' },
+    update: {}, // No updates if superadmin exists
+    create: {
+      name: 'Super Admin',
+      email: 'superadmin@example.com',
+      password: hashedPassword,
+      adminRole: true, // Mark this user as admin
+    },
+  });
+
   // Create a test user
   const user = await prisma.user.upsert({
     where: { email: 'testuser@example.com' },

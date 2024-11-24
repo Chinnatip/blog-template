@@ -1,13 +1,13 @@
 // components/BlogList.test.tsx
 import { render, screen } from '@testing-library/react';
-import { useStore } from '@/lib/store'
+import { usePostStore } from '@/lib/store'
 import BlogList from '@/components/BlogList';
 
 
 describe('BlogList Component', () => {
   beforeEach(() => {
     // Reset store state before each test
-    useStore.setState({ posts: [] });
+    usePostStore.setState({ posts: [] });
   });
 
   it('renders no posts message when there are no posts', () => {
@@ -17,7 +17,7 @@ describe('BlogList Component', () => {
 
   it('renders posts when there are posts', () => {
     // Set the store state with sample posts
-    useStore.setState({
+    usePostStore.setState({
       posts: [{ id: 1, title: 'Sample Post', content: 'Sample Content' }],
     });
 

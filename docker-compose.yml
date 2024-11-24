@@ -10,6 +10,7 @@ services:
     volumes:
       - ./backend:/app # Mount backend code for hot reloading
       - /app/node_modules # Prevent overwriting node_modules
+      - ./backend/uploads/images:/app/uploads/images # Mount uploads directory
     depends_on:
       - db
     networks:

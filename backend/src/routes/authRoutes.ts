@@ -82,10 +82,10 @@ router.post('/login', async (req: any, res: any) => {
     if (!isPasswordValid) {
       return res.status(401).json({ error: 'Invalid email or password.' });
     }
-    const { id, name } = user
+    const { id, name, adminRole } = user
     const token = jwt.sign({ id, email }, secret, { expiresIn: '1h' });
 
-    res.status(200).json({ token, user: { id, email, name } });
+    res.status(200).json({ token, user: { id, email, name, adminRole } });
   } catch (err) {
     res.status(500).json({ error: 'Internal server error' });
   }
@@ -99,7 +99,7 @@ router.get('/me', authenticateToken, async (req: any, res: any) => {
     // Fetch user details from the database
     const user = await prisma.user.findUnique({
       where: { id },
-      select: { id: true, name: true, email: true },
+      select: { id: true, name: true, email: true, adminRole: true },
     });
 
     if (!user) {

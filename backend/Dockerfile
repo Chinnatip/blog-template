@@ -1,26 +1,32 @@
-# ใช้ Node.js LTS image
+# Use Node.js LTS image
 FROM node:18
 
-# กำหนด working directory
+# Set working directory
 WORKDIR /app
 
-# คัดลอกไฟล์ package.json และ lock file
+# Create the uploads directory and set permissions
+RUN mkdir -p /app/uploads/images && chmod -R 755 /app/uploads/images
+
+# Add volume for image storage (this is optional; ensure volume is set in docker-compose.yml)
+VOLUME /app/uploads/images
+
+# Copy package.json and yarn.lock
 COPY package.json yarn.lock ./
 
-# ติดตั้ง dependencies
+# Install dependencies
 RUN yarn install
 
-# คัดลอกโค้ดทั้งหมดเข้าไปใน container
+# Copy all project files into the container
 COPY . .
 
-# สร้าง Prisma Client
+# Generate Prisma Client
 RUN npx prisma generate
 
-# เปิด port 4000
+# Expose port 4000
 EXPOSE 4000
 
+# Set environment variable
 ENV NODE_ENV=development
 
-# รัน Prisma Migration & Seed Script แล้วเริ่ม Backend Server
-# CMD ["sh", "-c", "npx prisma migrate deploy && npx prisma db seed && yarn start"]
-CMD ["sh", "-c", "if [ \"$NODE_ENV\" = \"development\" ]; then yarn dev; else yarn start; fi"]
+# Run Prisma Migration & Seed Script and start Backend Server
+CMD ["sh", "-c", "npx prisma migrate deploy && npx prisma db seed && if [ \"$NODE_ENV\" = \"development\" ]; then yarn dev; else yarn start; fi"]

@@ -2,14 +2,18 @@ import express from 'express';
 import cors from 'cors';
 import postRoutes from './routes/postRoutes';
 import authRoutes from './routes/authRoutes';
+import userRoutes from './routes/userRoutes';
+import imageRoutes from './routes/imageRoutes';
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
-app.use('/api/posts', postRoutes); // Mount postRoutes under /api/posts
-app.use('/api/auth', authRoutes); // Mount authRoutes under /api/auth
+app.use('/api/posts', postRoutes);
+app.use('/api/auth', authRoutes); 
+app.use('/api/users', userRoutes);
+app.use('/i', imageRoutes);
 
 // Routes will go here
 const PORT = process.env.PORT || 4000;
