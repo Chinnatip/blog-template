@@ -12,11 +12,18 @@ export interface Post {
     image?: string;
     published: boolean
 }
+
+export interface PageInfo {
+    totalPosts: number
+    totalPages: number
+    currentPage: number
+}
   
 export interface PostCreate {
     title: string;
     content: string;
     authorId: number
+    image?: string
 }
 
 export interface PostEdit {
@@ -33,19 +40,28 @@ export interface User {
     date: Date
 }
 
+export interface UserInfo {
+    totalUsers: number
+    totalPages: number
+    currentPage: number
+}
+
 export interface UserCreate {
     name: string
     email: string
     password: string
+    adminRole: boolean
 }
 
 export interface UserEdit {
     name: string
     email: string
+    adminRole: boolean
 }
 
 export interface PostState {
     posts: Post[];
+    pageInfo?: PageInfo | undefined;
     createPost: (post: PostCreate) => void;
     deletePost: (id: number) => void;
     updatePost: (id: number, post: PostEdit) => void;
@@ -58,6 +74,7 @@ export interface PostState {
 
 export interface UserState {
     users: User[];
+    userInfo?: UserInfo | undefined;
     createUser: (user: UserCreate, token: string) => void;
     deleteUser: (id: number, token: string) => void;
     updateUser: (id: number, post: UserEdit, token: string) => void;
@@ -134,7 +151,9 @@ export const useUserStore = create<UserState>((set, get) => ({
     fetchUsers: async ({ page, token }) => {
         const response = await api.get(`/users/page/${page}`, { headers: { Authorization: `Bearer ${token}` }});
         set(produce((state: UserState) => {
-            state.users = response.data.users.map((user: any) => ({
+            const { users, ...userInfo } = response.data
+            state.userInfo = userInfo
+            state.users = users.map((user: any) => ({
               id: user.id,
               name: user.name,
               email: user.email,
@@ -153,8 +172,8 @@ export const useUserStore = create<UserState>((set, get) => ({
         }));
     },
     updateUser: async (id: number, user: UserEdit, token: string) => {
-        const  { name, email } = user
-        await api.put(`/users/${id}`, { name, email  }, { headers: { Authorization: `Bearer ${token}` }})
+        const  { name, email, adminRole } = user
+        await api.put(`/users/${id}`, { name, email, adminRole  }, { headers: { Authorization: `Bearer ${token}` }})
     },
     deleteUser: async (id: number, token: string) => {
         await api.delete(`/users/${id}`, { headers: { Authorization: `Bearer ${token}` }});
@@ -164,8 +183,8 @@ export const useUserStore = create<UserState>((set, get) => ({
         }));
     },
     createUser: async (post: UserCreate, token: string) => {
-        const { name, email, password } = post
-        await api.post(`/users`, { name, email, password }, { headers: { Authorization: `Bearer ${token}` }})
+        const { name, email, password, adminRole } = post
+        await api.post(`/users`, { name, email, password, adminRole }, { headers: { Authorization: `Bearer ${token}` }})
     }
 }))
 
@@ -179,11 +198,13 @@ export const usePostStore = create<PostState>((set, get) => ({
     fetchPosts: async ({ page, user_id }) => {
         const response = await api.get(`/posts/page/${page}?authorId=${user_id}`);
         set(produce((state: PostState) => {
-            state.posts = response.data.posts.map((post: any) => ({
+            const { posts, ...pageInfo } = response.data
+            state.pageInfo = pageInfo
+            state.posts = posts.map((post: any) => ({
               id: post.id,
               title: post.title,
               content: post.content.slice(0, 150), // Use first 150 characters as description
-              image: post.coverImage || null, // Assuming `coverImage` exists in API
+              image: post.image || null, // Assuming `coverImage` exists in API
               date: post.updatedAt,
               published: post.published
             }));
@@ -196,7 +217,7 @@ export const usePostStore = create<PostState>((set, get) => ({
               id: post.id,
               title: post.title,
               content: post.content.slice(0, 150), // Use first 150 characters as description
-              image: post.coverImage || null, // Assuming `coverImage` exists in API
+              image: post.image || null, // Assuming `coverImage` exists in API
               date: post.updatedAt,
               published: post.published
             }));
@@ -223,8 +244,8 @@ export const usePostStore = create<PostState>((set, get) => ({
         }));
     },
     createPost: async (post: PostCreate) => {
-        const { title, content, authorId } = post
-        await api.post(`/posts`, { title, content, authorId })
+        const { title, content, authorId, image } = post
+        await api.post(`/posts`, { title, content, authorId, image })
     },
     uploadImage: async (file: File) => {
         try {

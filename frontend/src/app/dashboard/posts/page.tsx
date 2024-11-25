@@ -9,7 +9,7 @@ import { date_format } from '@/lib/date'
 const DashboardPage = () => {
   const router = useRouter()
   const { user } = useAuthStore();
-  const { posts, fetchPosts, deletePost, togglePublish } = usePostStore();
+  const { posts, pageInfo, fetchPosts, deletePost, togglePublish } = usePostStore();
 
   useEffect(() => {
     const getContent = async () => {
@@ -43,7 +43,11 @@ const DashboardPage = () => {
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">Dashboard</h1>
+        <h1 className="text-2xl font-bold">
+          {pageInfo?.totalPosts 
+            ? `Total ${pageInfo.totalPosts} posts available` 
+            : 'Your Post Dashboard'}
+        </h1>
         <button
           className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
           onClick={handleCreate}

@@ -96,19 +96,12 @@ router.get('/page/:pageNumber', authenticateToken, verifyAdmin , async (req: Req
 router.put('/:id', authenticateToken, verifyAdmin, async (req: Request, res: any) => {
   const { id } = req.params;
   const { name, password, adminRole } = req.body;
-  console.log(req.body)
 
   try {
     const updatedData: any = {};
     if (name) updatedData.name = name;
     if (password) updatedData.password = password; // hashed password
     if (adminRole != undefined) updatedData.adminRole = adminRole;
-
-    console.log(`update parcel >>>`, {
-      where: { id: Number(id) },
-      data: updatedData,
-    })
-
     const updatedUser = await prisma.user.update({
       where: { id: Number(id) },
       data: updatedData,

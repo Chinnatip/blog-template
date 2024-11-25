@@ -1,55 +1,95 @@
-import { useState } from 'react';
 import { useAuthStore } from '@/lib/store';
-import { useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation';
+import { Formik, Form, Field, ErrorMessage, FormikHelpers } from 'formik';
+import * as Yup from 'yup';
+
+interface LoginFormValues {
+  email: string;
+  password: string;
+  general?: string;
+}
 
 const Login = () => {
-  const { login } = useAuthStore()
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const router = useRouter()
+  const { login } = useAuthStore();
+  const router = useRouter();
 
-  const handleLogin = async (event: React.FormEvent) => {
-    event.preventDefault();
-    setError('');
+  const initialValues: LoginFormValues = {
+    email: '',
+    password: '',
+  };
 
+  const validationSchema = Yup.object({
+    email: Yup.string()
+      .email('Invalid email address')
+      .required('Email is required'),
+    password: Yup.string()
+      .min(5, 'Password must be at least 5 characters')
+      .required('Password is required'),
+  });
+
+  const handleSubmit = async (
+    values: LoginFormValues,
+    { setSubmitting, setFieldError }: FormikHelpers<LoginFormValues>
+  ) => {
     try {
-      await login(email, password, router);
-      setEmail('');
-      setPassword('');
+      await login(values.email, values.password, router);
     } catch (err) {
-      console.error(err)
-      setError('Invalid credentials');
+      console.error(err);
+      setFieldError('general', 'Invalid credentials');
+    } finally {
+      setSubmitting(false);
     }
   };
 
   return (
-    <div className='min-w-[360px] p-6 border rounded-lg bg-white'>
-      <h1 className='text-2xl font-bold'>Login</h1>
-      {error && <p className="text-red-500">{error}</p>}
-      <form onSubmit={handleLogin} className='flex flex-col'>
-        <label className='mt-4 mb-1' htmlFor="email">Email</label>
-        <input
-          id="email"
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="border p-2"
-        />
-        <label className='mt-4 mb-1' htmlFor="password">Password</label>
-        <input
-          id="password"
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="border p-2"
-        />
-        <button type="submit" className="mt-6 rounded-lg bg-blue-500 text-white p-2">
-          Login
-        </button>
-      </form>
+    <div className="min-w-[360px] p-6 border rounded-lg bg-white">
+      <h1 className="text-2xl font-bold">Login</h1>
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={handleSubmit}
+      >
+        {({ isSubmitting, errors }) => (
+          <Form className="flex flex-col">
+            {errors.general && (
+              <p className="text-red-500">{errors.general}</p>
+            )}
+            <label className="mt-4 mb-1" htmlFor="email">Email</label>
+            <Field
+              id="email"
+              name="email"
+              type="email"
+              placeholder="Email"
+              className="border p-2"
+            />
+            <ErrorMessage
+              name="email"
+              component="div"
+              className="text-red-500 text-sm"
+            />
+            <label className="mt-4 mb-1" htmlFor="password">Password</label>
+            <Field
+              id="password"
+              name="password"
+              type="password"
+              placeholder="Password"
+              className="border p-2"
+            />
+            <ErrorMessage
+              name="password"
+              component="div"
+              className="text-red-500 text-sm"
+            />
+            <button
+              type="submit"
+              className="mt-6 rounded-lg bg-blue-500 text-white p-2"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? 'Logging in...' : 'Login'}
+            </button>
+          </Form>
+        )}
+      </Formik>
     </div>
   );
 };

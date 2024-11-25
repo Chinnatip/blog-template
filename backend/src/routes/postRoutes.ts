@@ -40,7 +40,7 @@ router.get('/:id', async (req: Request, res: any) => {
 
 // Create a new post
 router.post('/', async (req: Request, res: any) => {
-    const { title, content, authorId } = req.body;
+    const { title, content, authorId, image } = req.body;
 
     try {
         // Validate input
@@ -54,6 +54,7 @@ router.post('/', async (req: Request, res: any) => {
                 title,
                 content,
                 authorId,
+                image
             },
         });
 

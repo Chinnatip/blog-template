@@ -8,6 +8,18 @@ async function main() {
 
   // Create or update superadmin
   await prisma.user.upsert({
+    where: { email: 'superadmin@example.com' },
+    update: {}, // No updates if superadmin exists
+    create: {
+      name: 'Super Admin',
+      email: 'superadmin@example.com',
+      password: hashedPassword,
+      adminRole: true, // Mark this user as admin
+    },
+  });
+
+  // Create or update superadmin
+  await prisma.user.upsert({
     where: { email: 'writer@example.com' },
     update: {},
     create: {

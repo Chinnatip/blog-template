@@ -4,6 +4,10 @@ import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation'
 import { api } from '@/lib/api';
 import { date_format } from '@/lib/date'
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm"; // To support GitHub-flavored Markdown (tables, strikethrough, etc.)
+import rehypeRaw from "rehype-raw"; // To allow raw HTML (use cautiously for security reasons)
+
 
 const PostDetail = () => {
     const params = useParams()
@@ -24,12 +28,12 @@ const PostDetail = () => {
         try {
             if (id) {
             const response = await api.get(`/posts/${id}`);
-            const { title, content, coverImage, updatedAt } = response.data;
+            const { title, content, image, updatedAt } = response.data;
 
             setPost({
                 title,
                 content,
-                image: coverImage || '/image_feature.jpg', // Fallback to default image
+                image: image || '/image_feature.jpg', // Fallback to default image
                 date: date_format(updatedAt)
             });
             }
@@ -67,9 +71,13 @@ const PostDetail = () => {
             <h1 className="text-2xl font-bold text-gray-800">{post.title}</h1>
             <p className="text-sm text-gray-400 mt-2">{post.date}</p>
             <div className="mt-4 text-gray-700 space-y-4">
-                {post.content.split('\n').map((paragraph, index) => (
-                <p key={index}>{paragraph}</p>
-                ))}
+                <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
+                rehypePlugins={[rehypeRaw]}
+                className="markdown-body"
+                >
+                {post.content}
+                </ReactMarkdown>
             </div>
             </div>
         </div>
