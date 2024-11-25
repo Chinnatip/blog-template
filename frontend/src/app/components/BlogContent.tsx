@@ -8,14 +8,14 @@ const Content = ({ post }:{ post: Post }) => {
     return (
       <div 
         onClick={() => router.push(`/posts/${post.id}`)}
-        className='grid xl:grid-cols-4 gap-8 mb-[24px] xl:mb-[54px] bg-white cursor-pointer transition-all duration-500 rounded-lg ease-in-out hover:border hover:bg-white hover:shadow-xl p-6'>
+        className='grid xl:grid-cols-4 gap-8 mb-[18px] xl:mb-[54px] bg-white cursor-pointer transition-all duration-500 rounded-lg ease-in-out hover:border hover:bg-white hover:shadow-xl p-6'>
         <div className="col-span-3 flex flex-col gap-2">  
           <div className="text-sm text-blue-500">{date_is(post.date)}</div>
 
           <img
             src={post.image || 'image_feature.jpg'} // Fallback to a default image
             alt={post.title}
-            className="rounded-lg mb-1 w-full h-full object-cover"
+            className="xl:hidden rounded-lg mb-1 w-full h-full object-cover"
           />
 
           <h1 className="cursor-pointer text-lg xl:text-2xl font-bold leading-tight text-black hover:underline">

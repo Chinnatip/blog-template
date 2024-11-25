@@ -2,11 +2,10 @@
 
 import BlogList from "@/components/BlogList";
 import Footer from "@/components/Footer";
-import { useMenuStore } from "@/lib/store";
 
 const Header = () => {
   return (
-    <div className="flex flex-col sm:flex-row items-center justify-between w-full px-8 sm:px-20 py-6 bg-white border border-gray-300">
+    <div className="flex flex-col sm:flex-row xl:grid xl:grid-cols-2 items-center justify-between w-full px-8 sm:px-20 py-6 bg-white border border-gray-300">
       {/* Left Section */}
       <div className="flex flex-col">
         <a
@@ -18,7 +17,7 @@ const Header = () => {
         <h1 className="text-2xl xl:text-3xl font-bold text-black mt-2">
           Insights from our team
         </h1>
-        <p className="text-sm xl:text-lg text-gray-600 max-w-[540px] mt-2">
+        <p className="text-sm xl:text-md text-gray-600 max-w-[540px] mt-2">
           Gain valuable insights straight from our team of experts! Explore ideas, strategies, and perspectives that drive innovation and success
         </p>
       </div>
@@ -76,8 +75,7 @@ export default function Home() {
           <BlogList />
         </div>
         <Footer />  
-      </main>
-      
+      </main>  
     </div>
   );
 }

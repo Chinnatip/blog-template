@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
+import { postExport } from './postExport'
 
 const prisma = new PrismaClient();
 
@@ -39,53 +40,12 @@ async function main() {
       password: hashedPassword,
       adminRole: true,
       posts: {
-        create: [
-          {
-            title: 'First Post',
-            content: 'This is the content of the first post.',
-            published: true,
-          },
-          {
-            title: 'Second Post',
-            content: 'This is the content of the second post.',
-            published: false,
-          },
-        ],
+        create: postExport
       },
     },
   });
 
   console.log(`User upserted: ${user.email}`);
-
-  // Add posts if the user already exists
-  if (user.id) {
-    const existingPosts = await prisma.post.findMany({
-      where: { authorId: user.id },
-    });
-
-    if (existingPosts.length === 0) {
-      console.log('Adding posts for existing user...');
-      await prisma.post.createMany({
-        data: [
-          {
-            title: 'First Post',
-            content: 'This is the content of the first post.',
-            published: true,
-            authorId: user.id,
-          },
-          {
-            title: 'Second Post',
-            content: 'This is the content of the second post.',
-            published: false,
-            authorId: user.id,
-          },
-        ],
-      });
-      console.log('Posts added.');
-    } else {
-      console.log('Posts already exist for the user.');
-    }
-  }
 }
 
 main()
