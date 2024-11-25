@@ -59,9 +59,9 @@ pnpm-debug.log*
 
 # Lock files (if you choose not to commit them)
 # Uncomment the lines below if you don't want to commit lock files
-# package-lock.json
-# yarn.lock
-# pnpm-lock.yaml
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
 
 # Docker files (ignore override files if any)
 docker-compose.override.yml
