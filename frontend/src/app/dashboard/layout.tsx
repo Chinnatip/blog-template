@@ -9,7 +9,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
 
   // Adjusted function to highlight for both main and subpaths
   const getLinkClass = (href: string) =>
-    `block px-5 pb-3 py-3 hover:bg-gray-700 ${
+    `text-center block px-5 pb-3 py-3 hover:bg-gray-700 ${
       pathname.startsWith(href) ? 'bg-gray-700' : ''
     }`;
 

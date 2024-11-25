@@ -47,7 +47,7 @@ const UserPanel = () => {
   return (
     <div>
       {user ? (
-        <div className='flex items-center'>
+        <div className='flex space-x-4 items-center'>
             { user && <UserBadge user={user} /> }
             <div className='mx-3 font-bold text-lg text-white capitalize'>{user.name}</div>
             <button name="logout" onClick={() => router.push('/dashboard')} className="inline-block bg-green-500 text-white p-2 px-5 mx-3 rounded-md">
