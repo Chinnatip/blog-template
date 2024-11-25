@@ -7,3 +7,114 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.font-primary {
+  font-family: var(--font-rubik), var(--font-noto-thai), sans-serif;
+}
+
+.markdown-body {
+  /* Base styles */
+  font-family: 'Inter', 'Arial', sans-serif; /* Modern and clean font */
+  line-height: 1.6; /* Slightly tighter line height */
+  color: #333; /* Neutral text color */
+  background-color: #ffffff; /* Clean white background */
+  border-radius: 6px; /* Softer rounded corners */
+
+}
+
+.markdown-body h1, .markdown-body h2, .markdown-body h3 {
+  font-weight: 600; /* Slightly bold */
+  color: #2b2b2b; /* Darker neutral color for headings */
+  margin-top: 1em; /* Compact spacing above headings */
+  margin-bottom: 0.5em; /* Reduced spacing below headings */
+}
+
+.markdown-body h1 {
+  font-size: 1.8rem; /* Scaled-down size */
+  border-bottom: 2px solid #eaecef; /* Clean underline */
+  padding-bottom: 0.2em; /* Compact padding */
+}
+
+.markdown-body h2 {
+  font-size: 1.6rem; /* Adjusted for better scaling */
+}
+
+.markdown-body h3 {
+  font-size: 1.4rem; /* Smaller but legible */
+}
+
+.markdown-body p {
+  margin: 0.8em 0; /* Reduced spacing for compactness */
+  color: #4d4d4d; /* Slightly muted text */
+}
+
+.markdown-body ul, .markdown-body ol {
+  padding-left: 18px; /* Smaller indent for lists */
+  margin: 0.8em 0; /* Compact spacing */
+}
+
+.markdown-body li {
+  margin-bottom: 0.4em; /* Tighter spacing between items */
+}
+
+.markdown-body code {
+  background: #f4f4f6; /* Subtle background for inline code */
+  padding: 0.15em 0.35em; /* Compact padding */
+  border-radius: 4px; /* Rounded corners for inline code */
+  font-family: 'Courier New', monospace; /* Classic monospace font */
+  color: #d6336c; /* Clean accent color for code */
+  font-size: 0.95rem; /* Slightly smaller text */
+}
+
+.markdown-body pre {
+  background: #2b2b2b; /* Dark modern background for preformatted blocks */
+  color: #ffffff; /* High contrast text */
+  padding: 0.8em; /* Compact padding */
+  border-radius: 6px; /* Softer rounded corners */
+  overflow-x: auto; /* Horizontal scroll for long code */
+  font-size: 0.9rem; /* Reduced font size for better fit */
+}
+
+.markdown-body blockquote {
+  border-left: 3px solid #d1d5db; /* Subtle highlight border */
+  background: #f9fafb; /* Light gray background */
+  margin: 0.8em 0; /* Compact spacing */
+  padding: 0.6em 1em; /* Reduced padding */
+  font-style: italic; /* Keep blockquote styled */
+  color: #6b7280; /* Muted gray text */
+}
+
+.markdown-body table {
+  width: 100%; /* Full width */
+  border-collapse: collapse; /* Compact table layout */
+  margin: 1em 0; /* Compact spacing */
+}
+
+.markdown-body th, .markdown-body td {
+  border: 1px solid #e5e7eb; /* Subtle borders */
+  padding: 0.6em; /* Compact cell padding */
+  text-align: left; /* Align text to the left */
+  font-size: 0.9rem; /* Slightly smaller text */
+}
+
+.markdown-body th {
+  background-color: #f4f6f8; /* Light header background */
+  font-weight: 600; /* Bold for emphasis */
+}
+
+.markdown-body img {
+  max-width: 100%; /* Ensure images scale properly */
+  border-radius: 6px; /* Rounded corners for modern look */
+  margin: 0.8em 0; /* Spacing for images */
+}
+
+/* Links */
+.markdown-body a {
+  color: #1d4ed8; /* Modern blue color */
+  text-decoration: none; /* No underline by default */
+  font-weight: 500; /* Slightly bold */
+}
+
+.markdown-body a:hover {
+  text-decoration: underline; /* Add underline on hover */
+}

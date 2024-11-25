@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "axios": "^1.7.7",
+    "dayjs": "^1.11.13",
     "formik": "^2.4.6",
     "immer": "^10.1.1",
     "next": "15.0.3",

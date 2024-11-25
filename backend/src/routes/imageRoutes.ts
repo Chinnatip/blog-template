@@ -28,6 +28,8 @@ router.post("/upload", upload.single("image"), (req: Request, res: any) => {
     });
 });
 
+console.log(path.join(__dirname, "../../uploads/images"))
+
 router.use("/images", express.static(path.join(__dirname, "../../uploads/images")));
 
 

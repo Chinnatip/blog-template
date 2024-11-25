@@ -68,7 +68,7 @@ router.post('/', async (req: Request, res: any) => {
 // Update a post
 router.put('/:id', async (req: Request, res: any) => {
     const { id } = req.params;
-    const { title, content, published } = req.body;
+    const { title, content, published, image } = req.body;
   
     try {
       // Validate input if `title` or `content` are provided
@@ -80,6 +80,7 @@ router.put('/:id', async (req: Request, res: any) => {
       const updateData: any = {};
       if (title) updateData.title = title;
       if (content) updateData.content = content;
+      if (image) updateData.image = image;
       if (published !== undefined) updateData.published = published;
   
       // Ensure there is at least one field to update

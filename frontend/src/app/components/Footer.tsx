@@ -1,6 +1,7 @@
 const Footer = () => {
-    return <footer className="my-[24px] block w-full text-center">
-        creative common free for use, 2024;
+    return <footer className="block px-12 w-full text-gray-500 text-right text-sm">
+        Your daily dose of knowledge on <br /> 
+        innovation, design, and future trends. <br />
     </footer>
 }
 

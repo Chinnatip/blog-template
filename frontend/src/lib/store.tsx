@@ -8,9 +8,11 @@ export interface Post {
     id: number;
     title: string;
     content: string;
+    contentCount?: number;
     date: Date;
     image?: string;
-    published: boolean
+    published: boolean;
+    author: string
 }
 
 export interface PageInfo {
@@ -30,6 +32,7 @@ export interface PostEdit {
     title: string;
     content: string;
     published: boolean
+    image?: string
 }
 
 export interface User {
@@ -57,6 +60,11 @@ export interface UserEdit {
     name: string
     email: string
     adminRole: boolean
+}
+
+export interface MenuState {
+    menubar: boolean;
+    toggleMenu: () => void;
 }
 
 export interface PostState {
@@ -93,6 +101,15 @@ interface AuthState {
     setUser: ( user: any) => void;
     setToken: ( token: string ) => void
 }
+
+export const useMenuStore = create<MenuState>((set) => ({
+    menubar: false,
+    toggleMenu() {
+        set(produce((state: MenuState) => {
+            state.menubar = !state.menubar
+        }))
+    }
+}))
 
 export const useAuthStore = create<AuthState>((set) => ({
     user: null,
@@ -203,10 +220,11 @@ export const usePostStore = create<PostState>((set, get) => ({
             state.posts = posts.map((post: any) => ({
               id: post.id,
               title: post.title,
-              content: post.content.slice(0, 150), // Use first 150 characters as description
+              content: post.content.slice(0, 240), // Use first 150 characters as description
               image: post.image || null, // Assuming `coverImage` exists in API
               date: post.updatedAt,
-              published: post.published
+              published: post.published,
+              author: post.author
             }));
         }));
     },
@@ -216,10 +234,12 @@ export const usePostStore = create<PostState>((set, get) => ({
             state.posts = response.data.posts.map((post: any) => ({
               id: post.id,
               title: post.title,
-              content: post.content.slice(0, 150), // Use first 150 characters as description
+              contentCount: post.content.length,
+              content: post.content.slice(0, 240), // Use first 150 characters as description
               image: post.image || null, // Assuming `coverImage` exists in API
               date: post.updatedAt,
-              published: post.published
+              published: post.published,
+              author: post.author.name
             }));
         }));
     },
@@ -233,8 +253,8 @@ export const usePostStore = create<PostState>((set, get) => ({
         }));
     },
     updatePost: async (id: number, post: PostEdit) => {
-        const  { title, content, published } = post
-        await api.put(`/posts/${id}`, { title, content, published  })
+        const  { title, content, published, image } = post
+        await api.put(`/posts/${id}`, { title, content, published, image  })
     },
     deletePost: async (id: number) => {
         await api.delete(`/posts/${id}`);
@@ -266,42 +286,3 @@ export const usePostStore = create<PostState>((set, get) => ({
         }
     } 
 }))
-
-// export const useCommentStore = create<UserState>((set, get) => ({
-//     users: [],
-//     fetchUserById: async (id: number) => {
-//         const response = await api.get(`/users/${id}`);
-//         const user: User = response.data
-//         return user
-//     },
-//     fetchUsers: async ({ page, user_id }) => {
-//         const response = await api.get(`/users/page/${page}?authorId=${user_id}`);
-//         set(produce((state: UserState) => {
-//             state.users = response.data.users
-//         }));
-//     },
-//     toggleAdmin: async (id: number, currentStatus: boolean) => {
-//         const newStatus = !currentStatus;
-//         await api.put(`/users/${id}`, { published: newStatus }); // อัปเดตสถานะใน backend
-//         set(produce((state: UserState) => {
-//             state.users = state.users.map((user) =>
-//                 user.id === id ? { ...user, adminRole: newStatus } : user
-//             )
-//         }));
-//     },
-//     updateUser: async (id: number, user: UserEdit) => {
-//         const  { name, email } = user
-//         await api.put(`/users/${id}`, { name, email  })
-//     },
-//     deleteUser: async (id: number) => {
-//         await api.delete(`/users/${id}`);
-//         const { users } = get()
-//         set(produce((state: UserState) => {
-//             state.users = users.filter(user => user.id != id)
-//         }));
-//     },
-//     createUser: async (post: UserCreate) => {
-//         const { name, email, password } = post
-//         await api.post(`/users`, { name, email, password })
-//     }
-// }))

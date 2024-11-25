@@ -2,24 +2,20 @@
 
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation'
+import { Post } from '@/lib/store'
 import { api } from '@/lib/api';
-import { date_format } from '@/lib/date'
 import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm"; // To support GitHub-flavored Markdown (tables, strikethrough, etc.)
-import rehypeRaw from "rehype-raw"; // To allow raw HTML (use cautiously for security reasons)
-
+import remarkGfm from "remark-gfm";
+import rehypeRaw from "rehype-raw";
+import { readCounter } from '@/lib/reading'
+import { date_is } from '@/lib/date'
 
 const PostDetail = () => {
     const params = useParams()
     const { id } = params
     const router = useRouter()
 
-    const [post, setPost] = useState<{
-        title: string;
-        content: string;
-        image: string | null;
-        date: string;
-    } | null>(null);
+    const [post, setPost] = useState<Post | null>(null);
 
     const [loading, setLoading] = useState(true);
 
@@ -28,13 +24,17 @@ const PostDetail = () => {
         try {
             if (id) {
             const response = await api.get(`/posts/${id}`);
-            const { title, content, image, updatedAt } = response.data;
+            const { id: idx ,author, title, content, image, published, updatedAt } = response.data;
 
             setPost({
+                id: idx,
                 title,
                 content,
                 image: image || '/image_feature.jpg', // Fallback to default image
-                date: date_format(updatedAt)
+                date: updatedAt,
+                published,
+                contentCount: content.length, 
+                author: author?.name
             });
             }
         } catch (error) {
@@ -60,33 +60,42 @@ const PostDetail = () => {
     }
 
     return (
-        <div className="max-w-4xl mx-auto py-10 px-4">
-        <div className="rounded-lg shadow-lg overflow-hidden bg-white">
-            <img
-            src={typeof post.image == 'string' ? post.image : ''}
-            alt={post.title}
-            className="w-full h-64 object-cover"
-            />
-            <div className="p-6">
-            <h1 className="text-2xl font-bold text-gray-800">{post.title}</h1>
-            <p className="text-sm text-gray-400 mt-2">{post.date}</p>
-            <div className="mt-4 text-gray-700 space-y-4">
-                <ReactMarkdown
-                remarkPlugins={[remarkGfm]}
-                rehypePlugins={[rehypeRaw]}
-                className="markdown-body"
+        <div className="max-w-4xl mx-auto py-4 xl:py-10 px-4">
+            <div className="rounded-md shadow-lg overflow-hidden bg-white">
+                <img
+                    src={typeof post.image == 'string' ? post.image : ''}
+                    alt={post.title}
+                    className="w-full h-[360px] object-cover"
+                />
+                <div className='bg-gray-100 py-5 px-4 xl:p-8'>
+                    <h1 className="text-2xl xl:text-3xl font-bold text-gray-800">{post.title}</h1>
+                    <p className='space-x-2 xl:space-x-4 xl:my-1'>
+                        <span className='text-gray-500 text-sm'>{date_is(post.date)}</span>
+                        <span>By {post.author}</span>
+                        <span>•</span>
+                        <span>{readCounter(post.contentCount)} min read</span>
+                    </p>
+                </div>
+                <div className="p-5 xl:p-8">
+                    <div className=" text-gray-700">
+                        <ReactMarkdown
+                        remarkPlugins={[remarkGfm]}
+                        rehypePlugins={[rehypeRaw]}
+                        className="markdown-body"
+                        >
+                        {post.content}
+                        </ReactMarkdown>
+                    </div>
+                </div>
+            </div>
+            <div className='text-center'>
+                <button
+                    className="mt-6 px-4 py-2 bg-gray-300 text-black rounded hover:bg-gray-400 transition duration-300"
+                    onClick={() => router.push('/')}
                 >
-                {post.content}
-                </ReactMarkdown>
+                    Back to Blog List
+                </button>
             </div>
-            </div>
-        </div>
-        <button
-            className="mt-6 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300"
-            onClick={() => router.push('/')}
-        >
-            Back to Blog List
-        </button>
         </div>
     );
 };
